@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -49,6 +50,17 @@ android {
 
 dependencies {
 
+    //FireBase
+
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
+
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    // Dependency for the Google Play services library
+    implementation("com.google.android.gms:play-services-auth:20.6.0")
+
+
     //Room Dependencies
     def room_version = "2.5.2"
 
@@ -71,6 +83,9 @@ dependencies {
 
     //PDF viewer
     implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
+
+
+
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.0')
