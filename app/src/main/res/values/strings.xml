@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Comrade Buddy</string>
+    <string name="app_title">Comrade Buddy</string>
+    <string name="sign_up_message">Sign up with Google</string>
 </resources>
