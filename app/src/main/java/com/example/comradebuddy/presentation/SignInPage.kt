@@ -127,9 +127,6 @@ fun SignInScreen(
                     }
                 }
             }
-
-            // Spacer(Modifier.height(110.dp))
-
         }
     }
 
