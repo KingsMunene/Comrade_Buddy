@@ -1,20 +1,15 @@
-package com.example.comradebuddy.presentation
+package com.example.comradebuddy.presentation.sign_in
 
-import android.app.Activity
 import android.content.Context
-import android.content.pm.ActivityInfo
-import android.media.Image
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.ui.layout.ContentScale
@@ -24,26 +19,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.graphics.Color.parseColor
-import android.graphics.drawable.shapes.Shape
+import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 
 
@@ -53,13 +40,26 @@ import com.example.comradebuddy.R
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current
+    context: Context = LocalContext.current,
+    state: SignInState,
+    onSignInClick: () -> Unit
 
 ) {
     // Restrict the login screen to landscape
 //    var activity = context as Activity
 //    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
 
+    val context = context
+    // Check if their is an error while signing up
+    LaunchedEffect(key1 = state.signInErrorMessage){
+        state.signInErrorMessage?.let { error ->
+            Toast.makeText(
+                context,
+                error,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -108,7 +108,9 @@ fun SignInScreen(
 
                 OutlinedCard(
                     modifier = Modifier
-                        .clickable{}
+                        .clickable(
+                            onClick =  onSignInClick
+                        )
                 ){
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -135,5 +137,5 @@ fun SignInScreen(
 @Preview(showBackground = true)
 @Composable
 fun SignInScreenPrev() {
-    SignInScreen()
+    //SignInScreen()
 }
