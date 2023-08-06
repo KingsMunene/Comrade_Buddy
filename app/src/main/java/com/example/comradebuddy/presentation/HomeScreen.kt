@@ -1,18 +1,23 @@
 package com.example.comradebuddy.presentation
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.comradebuddy.R
 import com.example.comradebuddy.data.Course
 import com.example.comradebuddy.presentation.notes.CoursesList
+import com.example.comradebuddy.presentation.notes.HomeSection
 import com.example.comradebuddy.presentation.sign_in.UserData
 
 @Composable
@@ -25,11 +30,13 @@ fun HomeScreen(
 
 ) {
     Column(
-    modifier
+        modifier
+            .padding(2.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
             text =
-            if (userData != null)"Hello ${userData.userName}!"  else "Hello User!",
+            if (userData != null)"Hello, ${userData.userName}!"  else "Hello User!",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .paddingFromBaseline(top = 40.dp, bottom = 8.dp)
@@ -42,17 +49,18 @@ fun HomeScreen(
             Text("Sign Out")
         }
 
-        Text(
-            text = "Courses",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .paddingFromBaseline(top = 40.dp, bottom = 8.dp)
-                .padding(horizontal = 16.dp)
-        )
+        HomeSection(
+            title = R.string.course_Slot ) {
+            CoursesList(
+                courses = courseList,
+                courseClicked = courseClicked
+            )
+        }
 
-        CoursesList(
-            courses = courseList,
-            courseClicked = courseClicked
-        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        HomeSection(title = R.string.past_papers_slot) {
+
+        }
     }
 }
