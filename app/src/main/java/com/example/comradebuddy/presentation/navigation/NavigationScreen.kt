@@ -3,6 +3,7 @@ package com.example.comradebuddy.presentation.navigation
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,6 +21,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.comradebuddy.presentation.HomeScreen
 import com.example.comradebuddy.presentation.notes.NoteBookViewModel
+import com.example.comradebuddy.presentation.notes.PdfDocViewer
+import com.example.comradebuddy.presentation.notes.PdfViewModel
+import com.example.comradebuddy.presentation.notes.UnitsList
 import com.example.comradebuddy.presentation.sign_in.GoogleAuthUiClient
 import com.example.comradebuddy.presentation.sign_in.SignInScreen
 import com.example.comradebuddy.presentation.sign_in.SignInViewModel
@@ -40,6 +44,7 @@ fun StartScreen(
     navController: NavHostController = rememberNavController(),
     signInViewModel: SignInViewModel = viewModel(),
     noteBookViewModel: NoteBookViewModel = viewModel(),
+    pdfViewModel: PdfViewModel = viewModel(),
     lifecycle: LifecycleCoroutineScope,
     context: Context
 
@@ -54,20 +59,20 @@ fun StartScreen(
         )
     }
 
-    //Check if a user is already signed in
-    LaunchedEffect(key1 = Unit ){
 
-        if(googleAuthUiClient.getSignedInUser() != null){
-            navController.navigate(AppNavigation.HOME.name)
-        }
-    }
     //Nav host for the app
-    NavHost(navController, startDestination = AppNavigation.LOGIN.name){
+    NavHost(
+        navController,
+        startDestination = AppNavigation.LOGIN.name
+    ){
 
+        // Composable for the Login Screen
         composable(AppNavigation.LOGIN.name){
-            LaunchedEffect(key1 = Unit) {
-                if(googleAuthUiClient.getSignedInUser() != null) {
-                    navController.navigate("profile")
+            //Check if a user is already signed in
+            LaunchedEffect(key1 = Unit ){
+                if(googleAuthUiClient.getSignedInUser() != null){
+                    navController.popBackStack()
+                    navController.navigate(AppNavigation.HOME.name)
                 }
             }
 
@@ -92,12 +97,13 @@ fun StartScreen(
                         "Sign in successful",
                         Toast.LENGTH_LONG
                     ).show()
-
+                   // navController.popBackStack()
                     navController.navigate(AppNavigation.HOME.name)
                     signInViewModel.resetState()
                 }
-            }
 
+            }
+            // Call the Sign In Screen
             SignInScreen(
                 state = state,
                 onSignInClick = {
@@ -108,16 +114,20 @@ fun StartScreen(
                                 signInIntentSender ?: return@launch
                             ).build()
                         )
+
                     }
                 }
             )
         }
 
+        // Composable for the Home Screen that shows the Courses
         composable(AppNavigation.HOME.name) {
             HomeScreen(
                 courseList = noteState.value.courses,
                 courseClicked = {
-                        courseName -> noteBookViewModel.getUnits(courseName)},
+                        courseName -> noteBookViewModel.units = noteBookViewModel.getUnits(courseName)
+                        navController.navigate(AppNavigation.UNITS.name
+                    ) },
                 userData = googleAuthUiClient.getSignedInUser(),
                 onSignOut = {
                     lifecycle.launch {
@@ -127,10 +137,30 @@ fun StartScreen(
                             "Signed out",
                             Toast.LENGTH_LONG
                         ).show()
-
                         navController.popBackStack()
+                        navController.navigate(AppNavigation.LOGIN.name)
                     }
                 }
+            )
+        }
+
+        // Composable for showing units available for the selected course
+        composable(AppNavigation.UNITS.name) {
+            UnitsList(
+                // Get the units set when a course is clicked
+                units = noteBookViewModel.units ,
+                // When a unit is clicked the file name is passed and we call the pdf viewer composable method
+                onUnitClicked = {
+                    fileName -> noteBookViewModel.fileName = fileName
+                    navController.navigate(AppNavigation.NOTES.name)
+                })
+        }
+
+        //Notes view composable method
+        composable(AppNavigation.NOTES.name){
+            PdfDocViewer(
+                fileName = noteBookViewModel.fileName,
+                pdfViewModel = pdfViewModel
             )
         }
     }
