@@ -2,4 +2,8 @@
     <string name="app_name">Comrade Buddy</string>
     <string name="app_title">Comrade Buddy</string>
     <string name="sign_up_message">Sign up with Google</string>
+    <string name="web_client_id">948400585698-7vke74mkuvtdil8hp1ih8eph40bf5t59.apps.googleusercontent.com</string>
+    <string name="course_Slot">Courses</string>
+    <string name="past_papers_slot">Past Papers</string>
+    <string name="uploaded_slot">Uploaded Notes</string>
 </resources>
