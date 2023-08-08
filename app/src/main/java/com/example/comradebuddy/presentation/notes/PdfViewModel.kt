@@ -2,9 +2,16 @@ package com.example.comradebuddy.presentation.notes
 
 import android.util.Log
 import android.view.View
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.ViewModel
 import com.example.comradebuddy.R
@@ -17,7 +24,8 @@ import kotlinx.coroutines.flow.update
 // We expect every document to start at first page (0)
 const val DEFAULTPAGENO = 0
 
-class PdfViewModel: ViewModel() {
+class PdfViewModel: ViewModel()
+{
 
     //Data class to hold the document page number
     data class DocPage(val pageNumber: Int = DEFAULTPAGENO)
@@ -28,32 +36,45 @@ class PdfViewModel: ViewModel() {
     @Composable
     fun PdfViewer(
         fileName: String,
+        unitName: String
     ) {
 
-        AndroidView(
-            factory = {
-                View.inflate(it, R.layout.pdf_viewer, null)
+        Column {
 
-            },
-            update = {
-                val pdfViewer = it.findViewById<PDFView>(R.id.pdfViewer)
+//            Card(
+//                modifier = Modifier
+//                    .clip(MaterialTheme.shapes.large)
+//                    .height(100.dp)
+//            ) {
+//                Text("UnitName: $unitName")
+//            }
 
-                pdfViewer.fromAsset(fileName)
-                    .defaultPage(_uiState.value.pageNumber)
-                    .enableSwipe(true)
-                    .scrollHandle(DefaultScrollHandle(it.context))
-                    .onPageChange { page, _ ->
-                        if (page >= 1){
-                           _uiState.update { it.copy(pageNumber = page) }
+            AndroidView(
+                factory = {
+                    View.inflate(it, R.layout.pdf_viewer, null)
+
+                },
+                update = {
+                    val pdfViewer = it.findViewById<PDFView>(R.id.pdfViewer)
+
+                    pdfViewer.fromAsset(fileName)
+                        .defaultPage(_uiState.value.pageNumber)
+                        .enableSwipe(true)
+                        .scrollHandle(DefaultScrollHandle(it.context))
+                        .onPageChange { page, _ ->
+                            if (page >= 1){
+                                _uiState.update { it.copy(pageNumber = page) }
+                            }
+                            Log.d("Here", "OnPageChange called")
+
                         }
-                        Log.d("Here", "OnPageChange called")
+                        .spacing(0)
+                        .load()
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
 
-                    }
-                    .spacing(0)
-                    .load()
-            },
-            modifier = Modifier.fillMaxSize()
-        )
 
 
     }
