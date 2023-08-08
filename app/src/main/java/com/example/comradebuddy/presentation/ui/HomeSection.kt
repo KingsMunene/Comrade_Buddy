@@ -1,4 +1,4 @@
-package com.example.comradebuddy.presentation.notes
+package com.example.comradebuddy.presentation.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
