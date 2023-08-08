@@ -117,8 +117,7 @@ fun Drawer(
             HomeScreen(
                 courseList = courseList,
                 courseClicked = courseClicked,
-                userData = userData ,
-                onSignOut = onSignOut,
+                userData = userData,
                 navController = navController,
                 drawerState = drawerState,
             )

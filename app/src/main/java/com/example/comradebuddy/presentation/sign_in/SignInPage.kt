@@ -1,6 +1,8 @@
 package com.example.comradebuddy.presentation.sign_in
 
+import android.app.Activity
 import android.content.Context
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -45,11 +47,8 @@ fun SignInScreen(
     onSignInClick: () -> Unit
 
 ) {
-    // Restrict the login screen to landscape
-//    var activity = context as Activity
-//    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
 
-    val context = context
+
     // Check if their is an error while signing up
     LaunchedEffect(key1 = state.signInErrorMessage){
         state.signInErrorMessage?.let { error ->
@@ -73,6 +72,9 @@ fun SignInScreen(
         }
     )
     {_->
+        // Restrict the login screen to landscape
+        var activity = context as Activity
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
 
         Column(
             modifier = Modifier

@@ -55,7 +55,6 @@ fun HomeScreen(
     courseList: List<Course>,
     courseClicked: (String) -> Unit,
     userData: UserData?,
-    onSignOut: () -> Unit,
     navController: NavController,
     drawerState: DrawerState,
 
@@ -73,8 +72,11 @@ fun HomeScreen(
             )
         },
         bottomBar = {
+
+            // BottomNavBar composable is called
             BottomNavBar(
                 navController = navController ,
+                // Define a list of BottomNavItems
                 items = listOf(
                     BottomNavItem(
                         name ="Home",
@@ -82,6 +84,8 @@ fun HomeScreen(
                         icon = Icons.Default.Home
                     )
                 ),
+
+                // Navigate to the route of the item selected
                 onItemClick = {
                     navController.popBackStack()
                     navController.navigate(it.route)
@@ -122,12 +126,6 @@ fun HomeScreen(
                             .clip(CircleShape)
                     )
                 }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(onClick = onSignOut) {
-                Text("Sign Out")
             }
 
             HomeSection(
