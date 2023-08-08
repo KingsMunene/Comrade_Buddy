@@ -3,10 +3,13 @@ package com.example.comradebuddy.presentation.navigation
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest.*
 import androidx.activity.result.contract.ActivityResultContracts
+
+
+import androidx.compose.material3.ExperimentalMaterial3Api
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,7 +22,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.comradebuddy.presentation.HomeScreen
+
 import com.example.comradebuddy.presentation.notes.NoteBookViewModel
 import com.example.comradebuddy.presentation.notes.PdfDocViewer
 import com.example.comradebuddy.presentation.notes.PdfViewModel
@@ -27,6 +30,9 @@ import com.example.comradebuddy.presentation.notes.UnitsList
 import com.example.comradebuddy.presentation.sign_in.GoogleAuthUiClient
 import com.example.comradebuddy.presentation.sign_in.SignInScreen
 import com.example.comradebuddy.presentation.sign_in.SignInViewModel
+
+
+import com.example.comradebuddy.presentation.ui.Drawer
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 
@@ -39,6 +45,7 @@ enum class AppNavigation{
     NOTES
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartScreen(
     navController: NavHostController = rememberNavController(),
@@ -58,7 +65,6 @@ fun StartScreen(
             oneTapClient = Identity.getSignInClient(context)
         )
     }
-
 
     //Nav host for the app
     NavHost(
@@ -97,7 +103,7 @@ fun StartScreen(
                         "Sign in successful",
                         Toast.LENGTH_LONG
                     ).show()
-                   // navController.popBackStack()
+                    // navController.popBackStack()
                     navController.navigate(AppNavigation.HOME.name)
                     signInViewModel.resetState()
                 }
@@ -122,11 +128,11 @@ fun StartScreen(
 
         // Composable for the Home Screen that shows the Courses
         composable(AppNavigation.HOME.name) {
-            HomeScreen(
+            Drawer(
                 courseList = noteState.value.courses,
                 courseClicked = {
                         courseName -> noteBookViewModel.units = noteBookViewModel.getUnits(courseName)
-                        navController.navigate(AppNavigation.UNITS.name
+                    navController.navigate(AppNavigation.UNITS.name
                     ) },
                 userData = googleAuthUiClient.getSignedInUser(),
                 onSignOut = {
@@ -140,7 +146,8 @@ fun StartScreen(
                         navController.popBackStack()
                         navController.navigate(AppNavigation.LOGIN.name)
                     }
-                }
+                },
+                navController = navController
             )
         }
 
@@ -151,18 +158,25 @@ fun StartScreen(
                 units = noteBookViewModel.units ,
                 // When a unit is clicked the file name is passed and we call the pdf viewer composable method
                 onUnitClicked = {
-                    fileName -> noteBookViewModel.fileName = fileName
+                        fileName, unitName -> noteBookViewModel.fileName = fileName
+                    noteBookViewModel.unitName = unitName
                     navController.navigate(AppNavigation.NOTES.name)
-                })
+                },
+                navController
+            )
         }
 
         //Notes view composable method
         composable(AppNavigation.NOTES.name){
             PdfDocViewer(
                 fileName = noteBookViewModel.fileName,
+                unitName = noteBookViewModel.unitName,
                 pdfViewModel = pdfViewModel
             )
         }
     }
+
+
+
 
 }
