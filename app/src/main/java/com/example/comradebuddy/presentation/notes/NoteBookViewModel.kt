@@ -21,6 +21,8 @@ class NoteBookViewModel : ViewModel(){
 
     var fileName: String = ""
 
+    var unitName: String = ""
+
 
     /** Function to get units for a specific course
      * It receives a course name and uses it to get a list of units associated to that
