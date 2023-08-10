@@ -14,7 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,13 +35,17 @@ fun CourseItem(
     courseName: String,
     onCourseClicked: () -> Unit
 ) {
-    Surface (
+    OutlinedCard (
         modifier = Modifier
             .clip(MaterialTheme.shapes.small)
             .clickable(
                 onClick = onCourseClicked
             )
             .padding(16.dp),
+//        colors = CardDefaults.cardColors(
+//            containerColor = MaterialTheme.colorScheme.surfaceVariant
+//        )
+
     ){
 
         Column(
@@ -46,14 +53,16 @@ fun CourseItem(
             verticalArrangement = Arrangement.Center
 
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.medium)
-                    .aspectRatio(16 / 8f)
-            )
+            Box {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .aspectRatio(16 / 12f)
+                )
+            }
 
             Spacer(modifier = Modifier.height(5.dp))
 
